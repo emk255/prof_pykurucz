@@ -21,7 +21,7 @@ USE_FLOAT32_ITERATION = True
 ITER_TOL = 1.0e-5  # Match Fortran's 1e-5 exactly
 MAX_ITER = NXTAU
 COEFJ_DIAG = np.diag(COEFJ_MATRIX)
-@jit(nopython=True, cache=True)
+@jit(nopython=True, cache=True, nogil=True)
 def _josh_iteration_kernel(
     coefj_matrix: np.ndarray,
     xs: np.ndarray,
@@ -92,7 +92,7 @@ def _josh_iteration_kernel(
     return xs, max_iter
 
 
-@jit(nopython=True, cache=True)
+@jit(nopython=True, cache=True, nogil=True)
 def _parcoe(f: np.ndarray, x: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Parabolic coefficients matching the Fortran PARCOE routine."""
 
@@ -167,7 +167,7 @@ def _parcoe(f: np.ndarray, x: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.nd
     return a, b, c
 
 
-@jit(nopython=True, cache=True)
+@jit(nopython=True, cache=True, nogil=True)
 def _integ(x: np.ndarray, f: np.ndarray, start: float) -> np.ndarray:
     """Numerical integral matching the Fortran INTEG routine."""
 
@@ -189,7 +189,7 @@ def _integ(x: np.ndarray, f: np.ndarray, start: float) -> np.ndarray:
     return fint
 
 
-@jit(nopython=True, cache=True)
+@jit(nopython=True, cache=True, nogil=True)
 def _deriv(x: np.ndarray, f: np.ndarray) -> np.ndarray:
     """Derivative helper mirroring the Fortran DERIV routine."""
 
@@ -217,7 +217,7 @@ def _deriv(x: np.ndarray, f: np.ndarray) -> np.ndarray:
     return dfdx
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=True, nogil=True)
 def _map1_kernel(
     xold: np.ndarray, fold: np.ndarray, xnew: np.ndarray
 ) -> tuple[np.ndarray, int]:

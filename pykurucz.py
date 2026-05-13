@@ -354,6 +354,7 @@ def run_atlas_py(
     convergence_epsilon: Optional[float] = None,
     convergence_min_iterations: int = 5,
     convergence_consecutive: int = 1,
+    n_workers: Optional[int] = None,
 ) -> Path:
     """Run ``atlas_py.cli`` on *input_atm* and write iterated output to *output_atm*.
 
@@ -433,6 +434,8 @@ def run_atlas_py(
         )
     if fort12_bin is not None and fort12_bin.exists():
         cmd.extend(["--line-selection-bin", str(fort12_bin)])
+    if n_workers is not None:
+        cmd.extend(["--n-workers", str(n_workers)])
 
     with log_path.open("w", encoding="utf-8") as logf:
         logf.write(
@@ -747,6 +750,7 @@ def synthesize(
             convergence_epsilon=atlas_convergence_epsilon,
             convergence_min_iterations=atlas_convergence_min_iterations,
             convergence_consecutive=atlas_convergence_consecutive,
+            n_workers=n_workers,
         )
     except (FileNotFoundError, RuntimeError) as exc:
         print(f"ERROR in atlas_py: {exc}")
